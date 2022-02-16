@@ -52,6 +52,6 @@ contract Voting {
     require(msg.sender != candidates[candidateId].addr);
     require(voters[msg.sender] == VOTER_STATUS.registered);
     candidates[candidateId].votes++;
-    voters[msg.sender] == VOTER_STATUS.hasVoted;
+    voters[msg.sender] = VOTER_STATUS.hasVoted;
   }
 }
