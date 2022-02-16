@@ -7,14 +7,14 @@ const utils = require("./helper/utils");
  */
 contract("Voting", function (accounts) {
   let voting;
-  let [user1, user2, user3] = accounts; 
-  let candidatesNames = ['Rodolfo', 'Peter', 'Sussan'];
+  let [owner, user1, user2, user3, candidate1, candidate2] = accounts; 
+  let candidatesNames = ['Rodolfo', 'Peter', 'Sussan', "Abby", "Julien"];
 
   beforeEach(async ()=> {
     voting = await Voting.new();
   });
 
-  context("registerVoter test cases", async ()=> {  
+  xcontext("registerVoter test cases", async ()=> {  
     it("should be able to register a new voter", async function () {
       let result = await voting.registerVoter({from: user1});
       console.log(result.logs);
@@ -27,17 +27,26 @@ contract("Voting", function (accounts) {
     });
   })
 
-  xcontext("createCandidate test cases", async ()=> {  
+  context("createCandidate test cases", async ()=> {  
     it("should be able to create a new candidate with the passed names and address", async ()=> {
-
+      let result = await voting.postCandidate(candidatesNames[0], candidate1, {from: owner});
+      let candidateInfo = await voting.candidates(0);
+      assert.equal(result.receipt.status, true);
+      assert.equal(candidateInfo.addr, candidate1);
     });
 
     it("should not allow to post more candidates than allowed", async ()=> {
+      let maxCandidates = await voting.maxCandidates();
 
+      for (var i = 0; i < maxCandidates; i++) {
+        await voting.postCandidate(candidatesNames[i], accounts[i], {from: owner});
+      }
+      await utils.shouldThrow(voting.postCandidate("Carl", accounts[6], {from: owner}));
     });
 
     it("should not allow to post a candidate two times", async ()=> {
-
+      await voting.postCandidate(candidatesNames[0], candidate1, {from: owner});
+      await utils.shouldThrow(voting.postCandidate(candidatesNames[0], candidate1, {from: owner}));
     });
   });
 
