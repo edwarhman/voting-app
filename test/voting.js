@@ -14,7 +14,7 @@ contract("Voting", function (accounts) {
     voting = await Voting.new();
   });
 
-  xcontext("registerVoter test cases", async ()=> {  
+  context("registerVoter test cases", async ()=> {  
     it("should be able to register a new voter", async function () {
       let result = await voting.registerVoter({from: user1});
       console.log(result.logs);
@@ -36,7 +36,7 @@ contract("Voting", function (accounts) {
     });
 
     it("should not allow to post more candidates than allowed", async ()=> {
-      let maxCandidates = await voting.maxCandidates();
+      let maxCandidates = await voting.maxCandidates()
 
       for (var i = 0; i < maxCandidates; i++) {
         await voting.postCandidate(candidatesNames[i], accounts[i], {from: owner});
@@ -50,21 +50,43 @@ contract("Voting", function (accounts) {
     });
   });
 
-  xcontext("voteForCandidate test cases", async ()=> {
+  context("voteForCandidate test cases", async ()=> {
+  
     it("should increment specified candidate votes by one and set voter status to hasVoted", async ()=> {
+      let candidateInfo;
+      let result;
+      let voterState;
+
+      await voting.postCandidate(candidatesNames[0], candidate1, {from: owner});
+      await voting.registerVoter({from: user1});
+      result = await voting.voteForCandidate(0, {from: user1});
+      candidateInfo = await voting.candidates(0);
+      voterState = await voting.voters(user1);
+
+      assert.equal(result.receipt.status, true);
+      assert.equal(candidateInfo.votes, 1);
+      assert.equal(voterState, 2); // 2 represents enum VOTER_STATUS.hasVoted
 
     });
 
     it("should not allow to pass an invalid candidate ID", async ()=> {
-
+      await voting.registerVoter({from: user1});
+      await utils.shouldThrow(voting.voteForCandidate(0, {from: user1}));
     });
 
     it("should not allow a candidate to vote for himself", async ()=> {
-
+      await voting.postCandidate(candidatesNames[0], candidate1, {from: owner});
+      await voting.registerVoter({from: candidate1});
+      await utils.shouldThrow(voting.voteForCandidate(0, {from: candidate1}));
     });
 
     it("should not allow to vote adressess that are not registered or are already vote", async ()=> {
-
+      await voting.postCandidate(candidatesNames[0], candidate1, {from: owner});
+      await voting.postCandidate(candidatesNames[1], candidate2, {from: owner});
+      await voting.registerVoter({from: user1});
+      await voting.voteForCandidate(0, {from: user1});
+      await utils.shouldThrow(voting.voteForCandidate(1, {from: user1}));
+      await utils.shouldThrow(voting.voteForCandidate(0, {from: user2}));
     });
   });
 
