@@ -12,21 +12,26 @@ contract Voting {
     uint votes;
   }
 
+  uint maxCandidates;
+
   //colection of data
-  address[] candidates;
+  Candidate[] candidates;
   mapping(address => bool) addressIsCandidate;
   mapping(address => VOTER_STATUS) voters;
 
+  //Timer variables
   uint countdown;
   uint startTime;
 
-  constructor() public {
-    startTime = now;
-    countdown = 1 week;
+
+  constructor() {
+    maxCandidates = 5;
+    startTime = block.timestamp;
+    countdown = 1 weeks;
   }
 
   modifier votingIsOpen() {
-    require(now < startTime + countdown);
+    require(block.timestamp < startTime + countdown);
     _;
   }
 
