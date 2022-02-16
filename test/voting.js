@@ -1,5 +1,5 @@
 const Voting = artifacts.require("Voting");
-
+const utils = require("./helper/utils");
 /*
  * uncomment accounts to access the test accounts made available by the
  * Ethereum client
@@ -22,11 +22,12 @@ contract("Voting", function (accounts) {
     });
 
     it("should not allow a user register two times" , async ()=> {
-
+      await voting.registerVoter({from: user2}); 
+      await utils.shouldThrow(voting.registerVoter({from: user2}));
     });
   })
 
-  context("createCandidate test cases", async ()=> {  
+  xcontext("createCandidate test cases", async ()=> {  
     it("should be able to create a new candidate with the passed names and address", async ()=> {
 
     });
@@ -40,7 +41,7 @@ contract("Voting", function (accounts) {
     });
   });
 
-  context("voteForCandidate test cases", async ()=> {
+  xcontext("voteForCandidate test cases", async ()=> {
     it("should increment specified candidate votes by one and set voter status to hasVoted", async ()=> {
 
     });
