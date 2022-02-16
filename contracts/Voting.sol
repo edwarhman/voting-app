@@ -12,16 +12,16 @@ contract Voting {
     uint votes;
   }
 
-  uint maxCandidates;
+  uint public maxCandidates;
 
   //colection of data
-  Candidate[] candidates;
+  Candidate[] public candidates;
   mapping(address => bool) addressIsCandidate;
-  mapping(address => VOTER_STATUS) voters;
+  mapping(address => VOTER_STATUS) public voters;
 
   //Timer variables
-  uint countdown;
-  uint startTime;
+  uint public countdown;
+  uint public startTime;
 
 
   constructor() {
