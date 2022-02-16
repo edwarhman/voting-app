@@ -32,6 +32,9 @@ const duration = {
     days: function (val) {
         return val * this.hours(24);
     },
+    weeks: function (val) {
+        return val * this.days(7);
+    },
 }
 
 module.exports = {

@@ -1,5 +1,6 @@
 const Voting = artifacts.require("Voting");
 const utils = require("./helper/utils");
+const time = require("./helper/time");
 /*
  * uncomment accounts to access the test accounts made available by the
  * Ethereum client
