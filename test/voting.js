@@ -15,7 +15,7 @@ contract("Voting", function (accounts) {
     voting = await Voting.new();
   });
 
-  context("registerVoter test cases", async ()=> {  
+  xcontext("registerVoter test cases", async ()=> {  
     it("should be able to register a new voter", async function () {
       let result = await voting.registerVoter({from: user1});
       assert.equal(result.receipt.status, true);
@@ -34,6 +34,10 @@ contract("Voting", function (accounts) {
       assert.equal(result.receipt.status, true);
       assert.equal(candidateInfo.addr, candidate1);
     });
+
+    it("should not allow an address that is not the owner to post a candidate", async ()=> {
+      await utils.shouldThrow(voting.postCandidate(candidatesNames[0], candidate1, {from: user1}));
+    })
 
     it("should not allow to post more candidates than allowed", async ()=> {
       let maxCandidates = await voting.maxCandidates()
