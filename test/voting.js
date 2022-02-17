@@ -1,6 +1,6 @@
 const Voting = artifacts.require("Voting");
-const utils = require("./helper/utils");
-const time = require("./helper/time");
+const utils = require("./helpers/utils");
+const time = require("./helpers/time");
 /*
  * uncomment accounts to access the test accounts made available by the
  * Ethereum client
@@ -15,7 +15,7 @@ contract("Voting", function (accounts) {
     voting = await Voting.new();
   });
 
-  context("registerVoter test cases", async ()=> {  
+  xcontext("registerVoter test cases", async ()=> {  
     it("should be able to register a new voter", async function () {
       let result = await voting.registerVoter({from: user1});
       console.log(result.logs);
@@ -28,7 +28,7 @@ contract("Voting", function (accounts) {
     });
   })
 
-  context("createCandidate test cases", async ()=> {  
+  xcontext("createCandidate test cases", async ()=> {  
     it("should be able to create a new candidate with the passed names and address", async ()=> {
       let result = await voting.postCandidate(candidatesNames[0], candidate1, {from: owner});
       let candidateInfo = await voting.candidates(0);
@@ -51,7 +51,7 @@ contract("Voting", function (accounts) {
     });
   });
 
-  context("voteForCandidate test cases", async ()=> {
+  xcontext("voteForCandidate test cases", async ()=> {
   
     it("should increment specified candidate votes by one and set voter status to hasVoted", async ()=> {
       let candidateInfo;
@@ -89,6 +89,15 @@ contract("Voting", function (accounts) {
       await utils.shouldThrow(voting.voteForCandidate(1, {from: user1}));
       await utils.shouldThrow(voting.voteForCandidate(0, {from: user2}));
     });
+  });
+
+  context("functions calling after the voting is close", async ()=> {
+    it("should not allow to register new voters, post candidates or vote for a candidate after the voting is close", async ()=> {
+      await time.advanceTimeAndBlock(time.duration.weeks(1));
+      await utils.shouldThrow(voting.registerVoter({from: user1}));
+      await utils.shouldThrow(voting.postCandidate(candidatesNames[0], candidate1, {from: owner}));
+      await utils.shouldThrow(voting.voteForCandidate(0, {from: user1}));
+    })
   });
 
 });
