@@ -25,18 +25,19 @@ contract Voting {
 
   //events
   event CandidatePosted (
-    string name,
-    address addr
+    string indexed name,
+    address indexed addr,
+    uint indexed id
   );
 
   event VoterStatusChanged (
     address addr,
-    VOTER_STATUS status
+    VOTER_STATUS indexed status
   ); 
 
   event NewVote (
     address voter,
-    address candidate,
+    address indexed candidate,
     uint candidateVotes
   );
 
