@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-contract Voting {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract Voting is Ownable {
   enum VOTER_STATUS {
     unregistered, registered, hasVoted
   }
@@ -58,12 +60,12 @@ contract Voting {
     emit VoterStatusChanged(msg.sender, voters[msg.sender]);
   }
 
-  function postCandidate(string memory _name, address _address) external votingIsOpen {
+  function postCandidate(string memory _name, address _address) external votingIsOpen onlyOwner {
     require(candidates.length < maxCandidates, "There are the maximum number of candidates.");
     require(addressIsCandidate[_address] == false, "The specified address already is a candidate.");
     candidates.push(Candidate(_name, _address, 0));
     addressIsCandidate[_address] = true;
-    emit CandidatePosted(_name, _address);
+    emit CandidatePosted(_name, _address, candidates.length - 1);
   }
 
   function voteForCandidate(uint candidateId) external votingIsOpen {
