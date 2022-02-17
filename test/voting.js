@@ -91,8 +91,8 @@ contract("Voting", function (accounts) {
     });
   });
 
-  context("functions calling after the voting is close", async ()=> {
-    it("should not allow to register new voters, post candidates or vote for a candidate after the voting is close", async ()=> {
+  context("functions calling after the voting is closed", async ()=> {
+    it("should not allow to register new voters, post candidates or vote for a candidate after the voting is closed", async ()=> {
       await time.advanceTimeAndBlock(time.duration.weeks(1));
       await utils.shouldThrow(voting.registerVoter({from: user1}));
       await utils.shouldThrow(voting.postCandidate(candidatesNames[0], candidate1, {from: owner}));
