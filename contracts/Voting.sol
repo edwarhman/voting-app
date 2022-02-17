@@ -23,6 +23,22 @@ contract Voting {
   uint public countdown;
   uint public startTime;
 
+  //events
+  event CandidatePosted (
+    string name,
+    address addr
+  );
+
+  event VoterStatusChanged (
+    address addr,
+    VOTER_STATUS status
+  ); 
+
+  event NewVote (
+    address voter,
+    address candidate,
+    uint candidateVotes
+  );
 
   constructor() {
     maxCandidates = 5;
@@ -38,6 +54,7 @@ contract Voting {
   function registerVoter() external votingIsOpen {
     require(voters[msg.sender] == VOTER_STATUS.unregistered, "The user address is already registered");
     voters[msg.sender] = VOTER_STATUS.registered;
+    emit VoterStatusChanged(msg.sender, voters[msg.sender]);
   }
 
   function postCandidate(string memory _name, address _address) external votingIsOpen {
@@ -45,6 +62,7 @@ contract Voting {
     require(addressIsCandidate[_address] == false, "The specified address already is a candidate.");
     candidates.push(Candidate(_name, _address, 0));
     addressIsCandidate[_address] = true;
+    emit CandidatePosted(_name, _address);
   }
 
   function voteForCandidate(uint candidateId) external votingIsOpen {
@@ -53,5 +71,7 @@ contract Voting {
     require(voters[msg.sender] == VOTER_STATUS.registered, "The user address is not registered in the voting or has already voted");
     candidates[candidateId].votes++;
     voters[msg.sender] = VOTER_STATUS.hasVoted;
+    emit NewVote(msg.sender, candidates[candidateId].addr, candidates[candidateId].votes);
+    emit VoterStatusChanged(msg.sender, voters[msg.sender]);
   }
 }

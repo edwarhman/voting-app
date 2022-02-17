@@ -15,10 +15,9 @@ contract("Voting", function (accounts) {
     voting = await Voting.new();
   });
 
-  xcontext("registerVoter test cases", async ()=> {  
+  context("registerVoter test cases", async ()=> {  
     it("should be able to register a new voter", async function () {
       let result = await voting.registerVoter({from: user1});
-      console.log(result.logs);
       assert.equal(result.receipt.status, true);
     });
 
@@ -28,7 +27,7 @@ contract("Voting", function (accounts) {
     });
   })
 
-  xcontext("createCandidate test cases", async ()=> {  
+  context("createCandidate test cases", async ()=> {  
     it("should be able to create a new candidate with the passed names and address", async ()=> {
       let result = await voting.postCandidate(candidatesNames[0], candidate1, {from: owner});
       let candidateInfo = await voting.candidates(0);
@@ -51,7 +50,7 @@ contract("Voting", function (accounts) {
     });
   });
 
-  xcontext("voteForCandidate test cases", async ()=> {
+  context("voteForCandidate test cases", async ()=> {
   
     it("should increment specified candidate votes by one and set voter status to hasVoted", async ()=> {
       let candidateInfo;
