@@ -15,7 +15,7 @@ contract("Voting", function (accounts) {
     voting = await Voting.new();
   });
 
-  xcontext("registerVoter test cases", async ()=> {  
+  context("registerVoter test cases", async ()=> {  
     it("should be able to register a new voter", async function () {
       let result = await voting.registerVoter({from: user1});
       assert.equal(result.receipt.status, true);
