@@ -2,13 +2,13 @@
   "name": "voting-app",
   "version": "1.0.0",
   "description": "",
-  "main": "truffle-config.js",
+  "main": "hardhat.config.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "compile": "truffle compile",
-    "test": "truffle test"
+    "compile": "hardhat compile",
+    "test": "hardhat test"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,10 @@
   },
   "homepage": "https://github.com/edwarhman/voting-app#readme",
   "devDependencies": {
-    "@openzeppelin/contracts": "^4.5.0"
+    "@nomiclabs/hardhat-truffle5": "^2.0.6",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "@openzeppelin/contracts": "^4.5.0",
+    "hardhat": "^2.9.7",
+    "web3": "^1.7.3"
   }
 }
