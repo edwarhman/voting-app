@@ -9,7 +9,9 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "coverage": "hardhat coverage"
+    "coverage": "hardhat coverage",
+    "prepare": "husky install",
+    "format:solidity": "prettier --write contracts/**/*.sol"
   },
   "repository": {
     "type": "git",
@@ -32,6 +34,7 @@
     "solhint": "^3.3.7",
     "solhint-plugin-prettier": "^0.0.5",
     "solidity-coverage": "^0.7.21",
-    "web3": "^1.7.3"
+    "web3": "^1.7.3",
+    "husky": "^8.0.0"
   }
 }
