@@ -23,14 +23,12 @@ contract Voting is Ownable {
   uint public maxCandidates;
 
   //colection of data
-  ///@notice returns the specified by his ID
-  ///@param id the candidate's position in the record
-  Candidate[] public candidates;
 
+  ///@notice returns the specified by his ID
+  Candidate[] public candidates;
   ///@dev check if address is a candidate
   mapping(address => bool) addressIsCandidate;
   ///@notice returns the specified voter status 
-  ///@param address The address to check the status
   mapping(address => VOTER_STATUS) public voters;
 
   ///@dev variables required to restrict voting functions
