@@ -3,13 +3,15 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-///@title A voting system
-///@author Emerson Warhman
-///@notice You can use this contract to manage a voting
-///
+/**@title A voting system
+ **@author Emerson Warhman
+ **@notice You can use this contract to manage a voting
+ */
 contract Voting is Ownable {
-    ///@dev voters can have 3 status: unregistered, registered, and has voted
-    enum VOTER_STATUS {
+    //types declarations
+
+    //voters can have 3 status: unregistered, registered, and has voted
+    enum VoterStatus {
         unregistered,
         registered,
         hasVoted
@@ -21,33 +23,31 @@ contract Voting is Ownable {
         uint256 votes;
     }
 
+    //state variables
+
     ///@notice returns the max number of candidates permited
     uint256 public maxCandidates;
-
-    //colection of data
-
-    ///@notice returns the specified by his ID
+    ///@notice returns the specified candidate by their ID
     Candidate[] public candidates;
-    ///@dev check if address is a candidate
-    mapping(address => bool) addressIsCandidate;
+    ///@notice check if address is a candidate
+    mapping(address => bool) public addressIsCandidate;
     ///@notice returns the specified voter status
-    mapping(address => VOTER_STATUS) public voters;
-
-    ///@dev variables required to restrict voting functions
+    mapping(address => VoterStatus) public voters;
+    ///@notice countdown to the end of the vote
     uint256 public countdown;
+    ///@notice vote start timestamp
     uint256 public startTime;
 
     //events
 
-    ///@notice when a candidate is posted emmit his name, address and id
+    ///@notice when a candidate is posted emit his information
     event CandidatePosted(
         string indexed name,
         address indexed addr,
         uint256 indexed id
     );
-    ///@notice when a voter is registered or has vote for a candidate emmit the status change
-    event VoterStatusChanged(address addr, VOTER_STATUS indexed status);
-
+    ///@notice when a voter is registered or has voted successfuly emit the status change
+    event VoterStatusChanged(address addr, VoterStatus indexed status);
     ///@notice when a voter vote for a candidate emit the operation
     event NewVote(
         address voter,
@@ -74,10 +74,10 @@ contract Voting is Ownable {
     ///@notice register a new voter in the voting
     function registerVoter() external votingIsOpen {
         require(
-            voters[msg.sender] == VOTER_STATUS.unregistered,
+            voters[msg.sender] == VoterStatus.unregistered,
             "The user address is already registered"
         );
-        voters[msg.sender] = VOTER_STATUS.registered;
+        voters[msg.sender] = VoterStatus.registered;
         emit VoterStatusChanged(msg.sender, voters[msg.sender]);
     }
 
@@ -111,14 +111,14 @@ contract Voting is Ownable {
         );
         require(
             msg.sender != candidates[candidateId].addr,
-            "A candidate is trying to vote for himself"
+            "Candidates cannot vote for themselves"
         );
         require(
-            voters[msg.sender] == VOTER_STATUS.registered,
+            voters[msg.sender] == VoterStatus.registered,
             "The user address is not registered in the voting or has already voted"
         );
         candidates[candidateId].votes++;
-        voters[msg.sender] = VOTER_STATUS.hasVoted;
+        voters[msg.sender] = VoterStatus.hasVoted;
         emit NewVote(
             msg.sender,
             candidates[candidateId].addr,
