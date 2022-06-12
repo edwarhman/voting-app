@@ -1,3 +1,5 @@
+const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
+
 const Voting = artifacts.require("Voting");
 const utils = require("./helpers/utils");
 const time = require("./helpers/time");
@@ -12,7 +14,7 @@ contract("Voting", function (accounts) {
   let candidatesNames = ['Rodolfo', 'Peter', 'Sussan', "Abby", "Julien"];
 
   beforeEach(async ()=> {
-    voting = await Voting.new();
+    voting = await deployProxy(Voting);
   });
 
   context("registerVoter test cases", async ()=> {  

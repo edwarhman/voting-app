@@ -2,12 +2,13 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**@title A voting system
  **@author Emerson Warhman
  **@notice You can use this contract to manage a voting
  */
-contract Voting is Ownable {
+contract Voting is OwnableUpgradeable {
     //types declarations
 
     //voters can have 3 status: unregistered, registered, and has voted
@@ -56,7 +57,14 @@ contract Voting is Ownable {
     );
 
     ///@dev set the max candidates permited, the time when the voting starts and the countdown to voting closing
+    /*
     constructor() {
+        maxCandidates = 5;
+        startTime = block.timestamp;
+        countdown = 1 weeks;
+    }*/
+    function initialize() public initializer {
+        __Ownable_init();
         maxCandidates = 5;
         startTime = block.timestamp;
         countdown = 1 weeks;
