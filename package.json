@@ -9,7 +9,7 @@
   "scripts": {
     "compile": "truffle compile",
     "test": "truffle test",
-    "coverage": "truffle coverage",
+    "coverage": "truffle run coverage",
     "prepare": "husky install",
     "format:solidity": "prettier --write contracts/**/*.sol"
   },
@@ -36,6 +36,7 @@
     "web3": "^1.7.3"
   },
   "dependencies": {
-    "@openzeppelin/contracts-upgradeable": "^4.6.0"
+    "@openzeppelin/contracts-upgradeable": "^4.6.0",
+    "solidity-coverage": "0.8.0-beta.1"
   }
 }
