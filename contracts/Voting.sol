@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 
 /**@title A voting system
  **@author Emerson Warhman
@@ -37,18 +37,12 @@ contract Voting is OwnableUpgradeable {
 
     ///@notice Collection of all the voting
     VotingData[] public votingHistory;
-    ///@notice returns the max number of candidates permited
-    uint256 public maxCandidates;
     ///@notice returns the specified candidate by their ID in the voting
     ///@notice must specify the voting ID first and then the candidate ID
     mapping(uint256 => mapping(uint256 => Candidate)) public candidatesInfo;
     ///@notice returns the specified voter status
     ///@notice must specify the voter address first and then the voting id to check
     mapping(address => mapping(uint256 => VoterStatus)) public voters;
-    ///@notice countdown to the end of the vote
-    uint256 public countdown;
-    ///@notice vote start timestamp
-    uint256 public startTime;
 
     //events
 
@@ -80,18 +74,9 @@ contract Voting is OwnableUpgradeable {
         uint256 candidateVotes
     );
 
-    ///@dev set the max candidates permited, the time when the voting starts and the countdown to voting closing
-    /*
-    constructor() {
-        maxCandidates = 5;
-        startTime = block.timestamp;
-        countdown = 1 weeks;
-    }*/
+    ///@dev set the contract owner
     function initialize() public initializer {
         __Ownable_init();
-        maxCandidates = 5;
-        startTime = block.timestamp;
-        countdown = 1 weeks;
     }
 
     ///@notice check if the voting is open to do operations
@@ -99,7 +84,7 @@ contract Voting is OwnableUpgradeable {
     modifier votingIsOpen(uint256 votingId) {
         require(
             block.timestamp < votingHistory[votingId].countdown,
-            "The voting is close."
+            'The voting is close.'
         );
         _;
     }
@@ -107,27 +92,30 @@ contract Voting is OwnableUpgradeable {
     ///@notice create a new voting
     ///@param title Title for the voting
     ///@param description Short description for the voting
-    ///@param candidates array of initial candidates
     ///@param maxCandidates Max amount of candidates that can participate in the voting
     ///@param countdown Countdown to the end of the voting (in seconds)
     function createNewVoting(
         string memory title,
         string memory description,
-        Candidate[] memory candidates,
         uint256 maxCandidates,
         uint256 countdown
     ) external {
-        votingHistory.push(VotingData(title, description, 0, maxCandidates, block.timestamp + countdown, 0));
+        votingHistory.push(
+            VotingData(
+                title,
+                description,
+                0,
+                maxCandidates,
+                block.timestamp + countdown,
+                0
+            )
+        );
         emit VotingCreated(
             title,
             description,
             countdown,
             votingHistory.length - 1
         );
-        uint256 votingId = votingHistory.length - 1;
-        for (uint256 i = 0; i < candidates.length; i++) {
-            postCandidate(votingId, candidates[i].name, candidates[i].addr);
-        }
     }
 
     ///@notice register a new voter in the specified voting
@@ -135,7 +123,7 @@ contract Voting is OwnableUpgradeable {
     function registerVoter(uint256 votingId) external votingIsOpen(votingId) {
         require(
             voters[msg.sender][votingId] == VoterStatus.unregistered,
-            "The user address is already registered"
+            'The user address is already registered'
         );
         voters[msg.sender][votingId] = VoterStatus.registered;
         emit VoterStatusChanged(
@@ -154,14 +142,15 @@ contract Voting is OwnableUpgradeable {
         string memory _name,
         address _address
     ) public votingIsOpen(votingId) onlyOwner {
-        uint candidateId = votingHistory[votingId].currentCandidates++;
+        uint256 candidateId = votingHistory[votingId].currentCandidates++;
         require(
-            votingHistory[votingId].currentCandidates <= maxCandidates,
-            "There are the maximum number of candidates."
+            votingHistory[votingId].currentCandidates <=
+                votingHistory[votingId].maxCandidates,
+            'There are the maximum number of candidates.'
         );
         require(
             candidatesInfo[votingId][candidateId].addr == address(0),
-            "The specified address already is a candidate."
+            'The specified address already is a candidate.'
         );
         candidatesInfo[votingId][candidateId] = Candidate(_name, _address, 0);
         emit CandidatePosted(votingId, _name, _address, candidateId);
@@ -176,15 +165,15 @@ contract Voting is OwnableUpgradeable {
     {
         require(
             candidateId < votingHistory[votingId].currentCandidates,
-            "The specified ID is invalid."
+            'The specified ID is invalid.'
         );
         require(
             msg.sender != candidatesInfo[votingId][candidateId].addr,
-            "Candidates cannot vote for themselves"
+            'Candidates cannot vote for themselves'
         );
         require(
             voters[msg.sender][votingId] == VoterStatus.registered,
-            "The user address is not registered in the voting or has already voted"
+            'The user address is not registered in the voting or has already voted'
         );
         candidatesInfo[votingId][candidateId].votes++;
         voters[msg.sender][votingId] = VoterStatus.hasVoted;
