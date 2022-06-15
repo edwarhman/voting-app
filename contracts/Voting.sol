@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 
 /**@title A voting system
  **@author Emerson Warhman
@@ -84,7 +84,7 @@ contract Voting is OwnableUpgradeable {
     modifier votingIsOpen(uint256 votingId) {
         require(
             block.timestamp < votingHistory[votingId].countdown,
-            "The voting is close."
+            'The voting is close.'
         );
         _;
     }
@@ -123,7 +123,7 @@ contract Voting is OwnableUpgradeable {
     function registerVoter(uint256 votingId) external votingIsOpen(votingId) {
         require(
             voters[msg.sender][votingId] == VoterStatus.unregistered,
-            "The user address is already registered"
+            'The user address is already registered'
         );
         voters[msg.sender][votingId] = VoterStatus.registered;
         emit VoterStatusChanged(
@@ -146,11 +146,11 @@ contract Voting is OwnableUpgradeable {
         require(
             votingHistory[votingId].currentCandidates <=
                 votingHistory[votingId].maxCandidates,
-            "There are the maximum number of candidates."
+            'There are the maximum number of candidates.'
         );
         require(
             candidatesInfo[votingId][candidateId].addr == address(0),
-            "The specified address already is a candidate."
+            'The specified address already is a candidate.'
         );
         candidatesInfo[votingId][candidateId] = Candidate(_name, _address, 0);
         emit CandidatePosted(votingId, _name, _address, candidateId);
@@ -165,15 +165,15 @@ contract Voting is OwnableUpgradeable {
     {
         require(
             candidateId < votingHistory[votingId].currentCandidates,
-            "The specified ID is invalid."
+            'The specified ID is invalid.'
         );
         require(
             msg.sender != candidatesInfo[votingId][candidateId].addr,
-            "Candidates cannot vote for themselves"
+            'Candidates cannot vote for themselves'
         );
         require(
             voters[msg.sender][votingId] == VoterStatus.registered,
-            "The user address is not registered in the voting or has already voted"
+            'The user address is not registered in the voting or has already voted'
         );
         candidatesInfo[votingId][candidateId].votes++;
         voters[msg.sender][votingId] = VoterStatus.hasVoted;
